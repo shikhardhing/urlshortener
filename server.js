@@ -11,8 +11,8 @@ app.set('port', (process.env.PORT || 5000));
 });
 connection.connect();*/
 var mongoose = require('mongoose')
-//var url="mongodb://<shikhar97>:<(xyz123)>@ds145315.mlab.com:45315/qwerty";
-var url = 'mongodb://localhost:27017/urldb'
+var url="mongodb://shikhar97:(xyz123)@ds145315.mlab.com:45315/qwerty";
+//var url = 'mongodb://localhost:27017/urldb'
 mongoose.connect(url)
 var db = mongoose.connection
 db.on('error', console.error.bind(console, 'connection error:'))
@@ -54,11 +54,14 @@ app.get('/new/:original_url(http://*.*)', function (req, res) {
 			urlRecords.find().sort('-num').exec(function(err,number){
 				if(err) throw err
 				console.log(number)
-				r=number[0]["num"]+1
+				if(!!number[0])
+					r=number[0]["num"]+1
+				else
+					r=1
 				record=new urlRecords({num:r,url:req.params.original_url})
 				record.save(function(err){
 					if(err) throw err
-					res.send(r+req.params.original_url)
+					res.send(r+" "+req.params.original_url)
 				})
 			})
 		}
